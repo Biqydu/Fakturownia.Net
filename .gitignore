@@ -1,0 +1,33 @@
+# User-specific files (Visual Studio, Rider, VS Code)
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+dist/
+
+# Secret files - ALWAYS ignore these
+appsettings.json
+appsettings.Development.json
+secrets.json
+.env
+
+# MacOS files
+.DS_Store
+
+# IDE specific
+.idea/
+.vs/
+.vscode/
+*.swp
+
+# Backup files
+*.bak
+*.tmp
+
+# Test outputs
+*.pdf

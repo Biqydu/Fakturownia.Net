@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biqydu.Fakturownia.Net", "Biqydu.Fakturownia.Net\Biqydu.Fakturownia.Net.csproj", "{BCC3141A-9DCD-489D-8B32-DC47FACA7201}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biqydu.Fakturownia.Net.Abstractions", "Biqydu.Fakturownia.Net.Abstractions\Biqydu.Fakturownia.Net.Abstractions.csproj", "{A9409352-DC3A-4085-AAD5-74C7FD29BC53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biqydu.Fakturownia.Net.DependencyInjection", "Biqydu.Fakturownia.Net.DependencyInjection\Biqydu.Fakturownia.Net.DependencyInjection.csproj", "{8D864892-33B8-486F-B902-E7849842B0A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biqydu.Fakturownia.Net.Playground", "Biqydu.Fakturownia.Net.Playground\Biqydu.Fakturownia.Net.Playground.csproj", "{885B7ACC-8A4E-4549-A3B3-2F4990F02621}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biqydu.Fakturownia.Net.Tests", "Biqydu.Fakturownia.Net.Tests\Biqydu.Fakturownia.Net.Tests.csproj", "{F01D34A9-7899-463D-847D-BD11C347EAC8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BCC3141A-9DCD-489D-8B32-DC47FACA7201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCC3141A-9DCD-489D-8B32-DC47FACA7201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCC3141A-9DCD-489D-8B32-DC47FACA7201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCC3141A-9DCD-489D-8B32-DC47FACA7201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9409352-DC3A-4085-AAD5-74C7FD29BC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9409352-DC3A-4085-AAD5-74C7FD29BC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9409352-DC3A-4085-AAD5-74C7FD29BC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9409352-DC3A-4085-AAD5-74C7FD29BC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D864892-33B8-486F-B902-E7849842B0A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D864892-33B8-486F-B902-E7849842B0A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D864892-33B8-486F-B902-E7849842B0A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D864892-33B8-486F-B902-E7849842B0A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885B7ACC-8A4E-4549-A3B3-2F4990F02621}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885B7ACC-8A4E-4549-A3B3-2F4990F02621}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885B7ACC-8A4E-4549-A3B3-2F4990F02621}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885B7ACC-8A4E-4549-A3B3-2F4990F02621}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F01D34A9-7899-463D-847D-BD11C347EAC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F01D34A9-7899-463D-847D-BD11C347EAC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F01D34A9-7899-463D-847D-BD11C347EAC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F01D34A9-7899-463D-847D-BD11C347EAC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
