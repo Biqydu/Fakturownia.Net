@@ -24,6 +24,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Biqydu.Fakturownia.Net.Abstractions\Biqydu.Fakturownia.Net.Abstractions.csproj" />
         <None Include="..\README.md" Pack="true" PackagePath="\" />
-        <None Include="..\icon.png" Pack="true" PackagePath="\" />
+        <None Include="..\logo.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
