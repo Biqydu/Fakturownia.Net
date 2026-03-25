@@ -3,13 +3,17 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.1</Version>
+        <Version>1.0.3</Version>
         <Authors>Biqydu</Authors>
-        <Description>Light and modern SDK for Fakturownia.pl for .NET.</Description>
-        <PackageTags>fakturownia;invoice;sdk;api</PackageTags>
+        <Description>Lightweight and modern .NET 8 SDK for Fakturownia.pl (Invoicing API).</Description>
+        <PackageTags>fakturownia;invoice;sdk;api;billing;dotnet8</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/Biqydu/Fakturownia.Net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Biqydu/Fakturownia.Net</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,5 +24,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Biqydu.Fakturownia.Net.Abstractions\Biqydu.Fakturownia.Net.Abstractions.csproj" />
         <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Biqydu.Fakturownia.Net.DependencyInjection.svg)](https://www.nuget.org/packages/Biqydu.Fakturownia.Net.DependencyInjection)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/Biqydu/Biqydu.Fakturownia.Net.svg?style=social)](https://github.com/Biqydu/Fakturownia.Net)
 
 A modern, high-performance, strictly typed .NET 8+ SDK for the [Fakturownia.pl](https://fakturownia.pl) invoicing API.
 

@@ -3,16 +3,20 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.1</Version>
+        <Version>1.0.3</Version>
         <Authors>Biqydu</Authors>
-        <Description>Abstractions and data models for Fakturownia.pl SDK.</Description>
-        <PackageTags>fakturownia;invoice;api;models</PackageTags>
+        <Description>Abstractions, interfaces and data models for Fakturownia.pl SDK.</Description>
+        <PackageTags>fakturownia;invoice;api;models;abstractions</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/Biqydu/Fakturownia.Net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Biqydu/Fakturownia.Net</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
