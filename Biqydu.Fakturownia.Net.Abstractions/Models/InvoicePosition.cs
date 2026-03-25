@@ -36,8 +36,8 @@ public record InvoicePosition
     public decimal? TotalPriceNet { get; init; }
 
     [JsonPropertyName("total_price_gross")]
-    [JsonConverter(typeof(NullableDecimalConverter))]
-    public decimal? TotalPriceGross { get; init; }
+    [JsonConverter(typeof(DecimalConverter))]
+    public required decimal TotalPriceGross { get; init; }
 
     // -------------------------
     // Discounts

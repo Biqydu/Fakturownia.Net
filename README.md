@@ -50,14 +50,16 @@ builder.Services.AddFakturownia(options =>
 ### Creating an Invoice
 
 ```csharp
-using Biqydu.Fakturownia.Net.Abstractions.Models;
-using Biqydu.Fakturownia.Net.Abstractions.Models.Constants;
+const decimal priceNet = 12500.00m;
+const int quantity = 3;
+const decimal taxRate = 0.23m; 
 
 var request = new InvoiceRequest
 {
     BuyerName = "Global Client Sp. z o.o.",
     BuyerTaxNo = "PL5250001090",
     Currency = Currencies.EUR,
+    Lang = Languages.EN,
     SellDate = DateTime.Today.ToString("yyyy-MM-dd"),
     IssueDate = DateTime.Today.ToString("yyyy-MM-dd"),
     Positions =
@@ -66,8 +68,8 @@ var request = new InvoiceRequest
         {
             Name = "Backend development services - March 2026",
             Tax = "23",
-            PriceNet = 12500.00m,
-            Quantity = 1,
+            Quantity = quantity,
+            TotalPriceGross = (priceNet * quantity) * (1 + taxRate),
             QuantityUnit = "service"
         }
     ]
