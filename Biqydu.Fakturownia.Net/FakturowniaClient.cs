@@ -88,6 +88,8 @@ public class FakturowniaClient(
     public async Task<InvoiceResponse> UpdateInvoiceAsync(long id, object invoiceFields, CancellationToken ct = default)
     {
         var url = $"invoices/{id}.json?api_token={_options.ApiToken}";
+        LogAction($"Updating invoice {id}", "PUT", url);
+        
         var payload = new { api_token = _options.ApiToken, invoice = invoiceFields };
 
         var response = await httpClient.PutAsJsonAsync(url, payload, ct);
@@ -101,7 +103,8 @@ public class FakturowniaClient(
     public async Task SendByEmailAsync(long id, CancellationToken ct = default)
     {
         var url = $"invoices/{id}/send_by_email.json?api_token={_options.ApiToken}";
-
+        LogAction($"Sending invoice {id} by email", "POST", url);
+        
         var response = await httpClient.PostAsync(url, null, ct);
 
         await EnsureSuccessAsync(response, $"sending invoice {id} by email", ct);
