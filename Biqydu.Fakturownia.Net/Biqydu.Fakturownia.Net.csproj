@@ -3,7 +3,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.4</Version>
+        <Version>1.1.0</Version>
         <Authors>Biqydu</Authors>
         <Description>Lightweight and modern .NET 8 SDK for Fakturownia.pl (Invoicing API).</Description>
         <PackageTags>fakturownia;invoice;sdk;api;billing;dotnet8</PackageTags>
