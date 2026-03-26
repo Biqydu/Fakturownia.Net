@@ -3,6 +3,7 @@ using Biqydu.Fakturownia.Net.Abstractions;
 using Biqydu.Fakturownia.Net.Abstractions.Models;
 using Biqydu.Fakturownia.Net.Abstractions.Models.Enums;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -24,7 +25,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
         const string jsonResponse = "{ \"id\": 123, \"number\": \"FV/1/2026\", \"price_gross\": 123.45 }";
         SetupResponse(HttpStatusCode.OK, jsonResponse);
         
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         var result = await client.GetInvoiceAsync(123);
@@ -41,7 +42,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
     {
         // Arrange
         SetupResponse(HttpStatusCode.OK, "{}");
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         await client.SendByEmailAsync(123);
@@ -67,7 +68,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
         const string errorJson = "{ \"error\": \"Invalid API Token\" }";
         SetupResponse(HttpStatusCode.Unauthorized, errorJson);
     
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
         var request = new InvoiceRequest 
         { 
             SellDate = "2026-03-24", 
@@ -92,7 +93,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
     {
         // Arrange
         SetupResponse(HttpStatusCode.OK, "[]");
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
         var query = new InvoiceQueryParams 
         { 
             Period = "this_month", 
@@ -118,7 +119,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
     {
         // Arrange
         SetupResponse(HttpStatusCode.OK, "{}");
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         await client.MarkAsPaidAsync(456);
@@ -145,7 +146,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
     {
         // Arrange
         SetupResponse(HttpStatusCode.Created, "{ \"id\": 1 }");
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
         var request = new InvoiceRequest 
         { 
             Income = IncomeKind.Expense, 
@@ -182,7 +183,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
                 Content = new ByteArrayContent(pdfBytes)
             });
 
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         var stream = await client.GetInvoicePdfAsync(123);
@@ -200,7 +201,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
         // Arrange
         const string jsonResponse = "{ \"id\": 123, \"buyer_name\": \"New Name\" }";
         SetupResponse(HttpStatusCode.OK, jsonResponse);
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
         var updateFields = new { buyer_name = "New Name" };
 
         // Act
@@ -222,7 +223,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
     {
         // Arrange
         SetupResponse(HttpStatusCode.OK, "");
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         await client.DeleteInvoiceAsync(123);
@@ -244,7 +245,7 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
         // Arrange
         const string validationError = "{ \"error\": \"Positions can't be empty\" }";
         SetupResponse(HttpStatusCode.UnprocessableEntity, validationError);
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         var act = async () => await client.CreateInvoiceAsync(new InvoiceRequest { 
@@ -257,13 +258,12 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
             .Where(ex => ex.ResponseBody != null && ex.ResponseBody.Contains("Positions can't be empty"));
     }
     
-    
     [Fact]
     public async Task GetInvoicesAsync_ShouldReturnEmptyEnumerable_WhenApiReturnsNull()
     {
         // Arrange
         SetupResponse(HttpStatusCode.OK, "null"); // API czasem płata figle
-        var client = new FakturowniaClient(CreateMockClient(), _options);
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
 
         // Act
         var result = await client.GetInvoicesAsync();
@@ -272,5 +272,26 @@ public class FakturowniaClientTests : FakturowniaClientTestsBase
         var invoiceResponses = result as InvoiceResponse[];
         invoiceResponses.Should().NotBeNull();
         invoiceResponses.Should().BeEmpty();
+    }
+    
+    [Fact]
+    public async Task SanitizeUrl_ShouldHideTokenInLogs()
+    {
+        // Arrange
+        SetupResponse(HttpStatusCode.BadRequest, "Error body");
+        var client = new FakturowniaClient(CreateMockClient(), _options, LoggerMock.Object);
+
+        // Act
+        try { await client.GetInvoiceAsync(123); } catch { /* ignorujemy błąd */ }
+
+        // Assert
+        LoggerMock.Verify(
+            x => x.Log(
+                LogLevel.Debug,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("***") && !v.ToString()!.Contains("test-token")),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
     }
 }

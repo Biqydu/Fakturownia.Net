@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 
@@ -7,7 +8,8 @@ namespace Biqydu.Fakturownia.Net.Tests;
 
 public abstract class FakturowniaClientTestsBase
 {
-    protected Mock<HttpMessageHandler> HandlerMock = new();
+    protected readonly Mock<HttpMessageHandler> HandlerMock = new();
+    protected Mock<ILogger<FakturowniaClient>> LoggerMock { get; } = new();
     
     protected HttpClient CreateMockClient()
     {
