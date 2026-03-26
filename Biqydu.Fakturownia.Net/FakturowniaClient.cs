@@ -3,6 +3,7 @@ using Biqydu.Fakturownia.Net.Abstractions;
 using Biqydu.Fakturownia.Net.Abstractions.Models;
 using Biqydu.Fakturownia.Net.Abstractions.Models.Constants;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Biqydu.Fakturownia.Net;
@@ -10,10 +11,11 @@ namespace Biqydu.Fakturownia.Net;
 public class FakturowniaClient(
     HttpClient httpClient, 
     IOptions<FakturowniaOptions> options,
-    ILogger<FakturowniaClient> logger)
+    ILogger<FakturowniaClient>? logger = null)
     : IFakturowniaClient
 {
     private readonly FakturowniaOptions _options = options.Value;
+    private readonly ILogger<FakturowniaClient> _logger = logger ?? NullLogger<FakturowniaClient>.Instance;
 
     public async Task<InvoiceResponse> CreateInvoiceAsync(InvoiceRequest request, CancellationToken ct = default)
     {
@@ -115,7 +117,7 @@ public class FakturowniaClient(
     private void LogAction(string message, string method, string url)
     {
         var sanitizedUrl = SanitizeUrl(url);
-        logger.LogDebug("Fakturownia SDK: {Message} [{Method} {Url}]", message, method, sanitizedUrl);
+        _logger.LogDebug("Fakturownia SDK: {Message} [{Method} {Url}]", message, method, sanitizedUrl);
     }
 
     private string SanitizeUrl(string url)
@@ -136,13 +138,13 @@ public class FakturowniaClient(
     {
         if (response.IsSuccessStatusCode)
         {
-            logger.LogDebug("Fakturownia API: Successfully finished {Action} (Status: {StatusCode})", action, response.StatusCode);
+            _logger.LogDebug("Fakturownia API: Successfully finished {Action} (Status: {StatusCode})", action, response.StatusCode);
             return;
         }
 
         var errorContent = await response.Content.ReadAsStringAsync(ct);
         
-        logger.LogError("Fakturownia API error during {Action}. Status: {StatusCode}, Reason: {Reason}, Body: {Body}", 
+        _logger.LogError("Fakturownia API error during {Action}. Status: {StatusCode}, Reason: {Reason}, Body: {Body}", 
             action, (int)response.StatusCode, response.ReasonPhrase, errorContent);
         
         throw new FakturowniaException(
