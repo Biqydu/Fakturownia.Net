@@ -51,6 +51,9 @@ public record InvoiceRequest
     [JsonPropertyName("seller_name")]
     public string? SellerName { get; init; }
 
+    /// <summary>
+    /// Represents the tax identification number of the seller.
+    /// </summary>
     [JsonPropertyName("seller_tax_no")]
     public string? SellerTaxNo { get; init; }
 
@@ -100,6 +103,9 @@ public record InvoiceRequest
     [JsonPropertyName("buyer_name")]
     public required string BuyerName { get; init; }
 
+    /// <summary>
+    /// Represents the tax identification number of the buyer.
+    /// </summary>
     [JsonPropertyName("buyer_tax_no")]
     public string? BuyerTaxNo { get; init; }
 
@@ -126,12 +132,9 @@ public record InvoiceRequest
 
     [JsonPropertyName("buyer_note")]
     public string? BuyerNote { get; init; }
-
-    /// <summary>
-    /// "1" if the buyer is a company. Empty = private individual.
-    /// </summary>
+    
     [JsonPropertyName("buyer_company")]
-    public string? BuyerCompany { get; init; }
+    public bool? BuyerCompany { get; init; }
 
     [JsonPropertyName("buyer_person")]
     public string? BuyerPerson { get; init; }
@@ -238,6 +241,9 @@ public record InvoiceRequest
     /// </summary>
     [JsonPropertyName("additional_info_desc")]
     public string? AdditionalInfoDesc { get; init; }
+    
+    [JsonPropertyName("gov_save_and_send")]
+    public bool? GovSaveAndSend { get; init; }
 
     // -------------------------
     // Currency Exchange
