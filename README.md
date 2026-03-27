@@ -5,6 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern, high-performance, strictly typed .NET 8+ SDK for the [Fakturownia.pl](https://fakturownia.pl) invoicing API.
+> **Enjoying this SDK?** Please consider giving it a ⭐ **Star** on GitHub to help others find it! 🚀
 
 Built with `IHttpClientFactory`, `System.Text.Json`, and `decimal` for full financial precision.
 
@@ -18,6 +19,7 @@ Built with `IHttpClientFactory`, `System.Text.Json`, and `decimal` for full fina
 - Excellent Dependency Injection support for ASP.NET Core
 - Comprehensive models with full XML documentation
 - **Built-in Resilience**: Includes automatic retries with exponential backoff (via Polly) for transient errors and rate limiting (429).
+- **Secure Logging**: Integrated `ILogger` support with automatic `api_token` masking.
 
 ## 📦 Packages
 
@@ -136,6 +138,21 @@ catch (FakturowniaException ex)
     Console.WriteLine($"Fakturownia response: {ex.ResponseBody}");
     // ex contains validation errors, rate limits, authorization issues, etc.
 }
+```
+
+## 🪵 Logging & Debugging
+
+The SDK uses the standard `Microsoft.Extensions.Logging` abstractions. It is **optional** and **secure** by design.
+
+### Why use it?
+Fakturownia API can be unpredictable. Logging allows you to see the exact reason for failures (like validation errors or 422 Unprocessable Entity) that are otherwise hidden.
+
+### Enabling Logs
+If you are using Dependency Injection, just configure your logging provider:
+
+```csharp
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Debug); // To see detailed SDK actions
 ```
 
 ## 🤝 Contributing
