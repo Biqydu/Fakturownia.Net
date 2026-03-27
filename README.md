@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern, high-performance, strictly typed .NET 8+ SDK for the [Fakturownia.pl](https://fakturownia.pl) invoicing API.
-> **Enjoying this SDK?** Please consider giving it a ⭐ **Star** on GitHub to help others find it! 🚀
+> **Enjoying this SDK?** Please consider giving it a ⭐ **Star** on GitHub to help others find it!
 
 Built with `IHttpClientFactory`, `System.Text.Json`, and `decimal` for full financial precision.
 
