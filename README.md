@@ -4,57 +4,51 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Biqydu.Fakturownia.Net.DependencyInjection.svg?color=blue&logo=nuget)](https://www.nuget.org/packages/Biqydu.Fakturownia.Net.DependencyInjection)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A modern, high-performance, strictly typed .NET 8+ SDK for the [Fakturownia.pl](https://fakturownia.pl) invoicing API.
-> **Enjoying this SDK?** Please consider giving it a ⭐ **Star** on GitHub to help others find it!
+A clean, fully-typed .NET 8+ client for the Fakturownia.pl invoicing API.
 
-Built with `IHttpClientFactory`, `System.Text.Json`, and `decimal` for full financial precision.
+> **Enjoying the SDK?** Drop a ⭐ on GitHub — it really helps others discover it!
 
-## 🚀 Key Features
+## Why this project?
+While Fakturownia.pl is popular in Poland, there was no up-to-date, dedicated SDK for modern .NET. I built this to fill that gap with a focus on reliability:
 
-- Full asynchronous, typed client using `HttpClientFactory`
-- Complete support for creating and managing invoices
-- Accurate financial calculations using `decimal`
-- Efficient PDF handling as `Stream`
-- Built-in support for email sending and status changes
-- Excellent Dependency Injection support for ASP.NET Core
-- Comprehensive models with full XML documentation
-- **Built-in Resilience**: Includes automatic retries with exponential backoff (via Polly) for transient errors and rate limiting (429).
-- **Secure Logging**: Integrated `ILogger` support with automatic `api_token` masking.
+- **Financial precision**: Uses `decimal` for all monetary values to avoid rounding errors (no `double` or `float` here).
+- **Resilient by default**: Includes Polly policies to handle transient errors and 429 (rate limit) responses automatically.
+- **Security**: Built-in masking for `api_token` in logs to prevent accidental leaks.
+- **Native PDF streaming**: Downloads are returned as a Stream, so you can pipe them directly to a file or web response without loading everything into memory.
 
-## 📦 Packages
+## Packages
+The SDK is split into three parts so you don't have to pull in dependencies you don't need:
 
-| Package                                      | Purpose                                      | Recommended |
-|---------------------------------------------|----------------------------------------------|-------------|
-| `Biqydu.Fakturownia.Net.Abstractions`       | Models, enums, DTOs and interfaces           | Yes         |
-| `Biqydu.Fakturownia.Net`                    | Core API client implementation               | Yes         |
-| `Biqydu.Fakturownia.Net.DependencyInjection`| `IServiceCollection` extensions              | **Yes**     |
+- **`Biqydu.Fakturownia.Net.Abstractions`**: Just the models and interfaces. Low footprint, no logic.
+- **`Biqydu.Fakturownia.Net`**: The main client implementation.
+- **`Biqydu.Fakturownia.Net.DependencyInjection`**: Extensions for `IServiceCollection`. **Start here** if you are using ASP.NET Core.
 
-## 🛠️ Installation
+## Installation
 
 ```bash
 dotnet add package Biqydu.Fakturownia.Net.DependencyInjection
 ```
 
-## ⚙️ Configuration
+## Configuration
 
-In `Program.cs`:
+In your `Program.cs`:
 
 ```csharp
 builder.Services.AddFakturownia(options =>
 {
     options.ApiToken = "YOUR_API_TOKEN_HERE";
-    options.Subdomain = "your-company"; // np. "acme" → acme.fakturownia.pl
+    options.Subdomain = "your-company"; // e.g. "acme" → acme.fakturownia.pl
 });
 ```
 
-## 📖 Basic Usage
+## Basic Usage
 
 ### Creating an Invoice
 
 ```csharp
 const decimal priceNet = 12500.00m;
 const int quantity = 3;
-const decimal taxRate = 0.23m; 
+const decimal taxRate = 0.23m;
 
 var request = new InvoiceRequest
 {
@@ -81,11 +75,10 @@ var invoice = await fakturowniaClient.CreateInvoiceAsync(request);
 Console.WriteLine($"Invoice created: {invoice.Number}");
 ```
 
-### Downloading PDF
+### Downloading the PDF
 
 ```csharp
 await using var pdfStream = await fakturowniaClient.GetInvoicePdfAsync(invoice.Id);
-
 await using var fileStream = File.Create($"FV_{invoice.Number.Replace("/", "-")}.pdf");
 await pdfStream.CopyToAsync(fileStream);
 ```
@@ -96,9 +89,9 @@ await pdfStream.CopyToAsync(fileStream);
 await fakturowniaClient.SendByEmailAsync(invoice.Id);
 ```
 
-## ✨ Advanced Usage
+## Advanced Examples
 
-### Discounts + GTU Code (JPK_V7)
+### Adding Discounts and GTU Codes
 
 ```csharp
 var position = new InvoicePosition
@@ -107,8 +100,8 @@ var position = new InvoicePosition
     Tax = "23",
     PriceNet = 5200m,
     Quantity = 2,
-    GtuCode = "GTU_01",      
-    DiscountPercent = 5m          
+    GtuCode = "GTU_01",
+    DiscountPercent = 5m
 };
 ```
 
@@ -116,16 +109,16 @@ var position = new InvoicePosition
 
 ```csharp
 request.ExchangeCurrency = Currencies.PLN;
-request.ExchangeKind = "nbp";  
+request.ExchangeKind = "nbp";
 ```
 
 ### Lump-sum Tax
 
 ```csharp
-position.LumpSumTax = "8.5";      // only when company has lump-sum tax enabled
+position.LumpSumTax = "8.5"; // only if your company uses lump-sum taxation
 ```
 
-## ⚠️ Error Handling
+## Error Handling
 
 ```csharp
 try
@@ -136,41 +129,39 @@ catch (FakturowniaException ex)
 {
     Console.WriteLine($"HTTP Status: {ex.StatusCode}");
     Console.WriteLine($"Fakturownia response: {ex.ResponseBody}");
-    // ex contains validation errors, rate limits, authorization issues, etc.
+    // ex contains validation errors, rate limits, auth issues, etc.
 }
 ```
 
-## 🪵 Logging & Debugging
+## Logging & Debugging
 
-The SDK uses the standard `Microsoft.Extensions.Logging` abstractions. It is **optional** and **secure** by design.
+The SDK integrates with `Microsoft.Extensions.Logging.Abstractions` and is optional but very useful.
 
-### Why use it?
-Fakturownia API can be unpredictable. Logging allows you to see the exact reason for failures (like validation errors or 422 Unprocessable Entity) that are otherwise hidden.
-
-### Enabling Logs
-If you are using Dependency Injection, just configure your logging provider:
+Just enable console (or any other) logging in your app:
 
 ```csharp
 builder.Logging.AddConsole();
-builder.Logging.SetMinimumLevel(LogLevel.Debug); // To see detailed SDK actions
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 ```
 
-## 🤝 Contributing
+The `api_token` is automatically masked in logs for security.
+
+## Contributing
 
 Contributions are welcome!
 
 1. Fork the project
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📜 License
+## License
 
 Distributed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Disclaimer**: This is an **unofficial** SDK and is not affiliated with, endorsed by, or supported by Fakturownia.pl.
+**Note**: This is an unofficial .NET SDK for Fakturownia.pl and is not affiliated with or supported by them.
 
-Made with ❤️ for the .NET community.
+Maintained by Biqydu. Bug reports and PRs are welcome.
