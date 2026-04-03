@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Biqydu.Fakturownia.Net.Abstractions.Models.Enums;
+using Biqydu.Fakturownia.Net.Abstractions.Enums;
 
 namespace Biqydu.Fakturownia.Net.Abstractions.Converters;
 

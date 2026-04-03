@@ -9,6 +9,7 @@ A clean, fully-typed .NET 8+ client for the Fakturownia.pl invoicing API.
 > **Enjoying the SDK?** Drop a ⭐ on GitHub — it really helps others discover it!
 
 ## Why this project?
+
 While Fakturownia.pl is popular in Poland, there was no up-to-date, dedicated SDK for modern .NET. I built this to fill that gap with a focus on reliability:
 
 - **Financial precision**: Uses `decimal` for all monetary values to avoid rounding errors (no `double` or `float` here).
@@ -17,6 +18,7 @@ While Fakturownia.pl is popular in Poland, there was no up-to-date, dedicated SD
 - **Native PDF streaming**: Downloads are returned as a Stream, so you can pipe them directly to a file or web response without loading everything into memory.
 
 ## Packages
+
 The SDK is split into three parts so you don't have to pull in dependencies you don't need:
 
 - **`Biqydu.Fakturownia.Net.Abstractions`**: Just the models and interfaces. Low footprint, no logic.
@@ -48,7 +50,7 @@ builder.Services.AddFakturownia(options =>
 ```csharp
 const decimal priceNet = 12500.00m;
 const int quantity = 3;
-const decimal taxRate = 0.23m;
+var taxRate = VatRates.ToRate(VatRates.Vat23) ?? 0;
 
 var request = new InvoiceRequest
 {
@@ -94,15 +96,44 @@ await fakturowniaClient.SendByEmailAsync(invoice.Id);
 ### Adding Discounts and GTU Codes
 
 ```csharp
-var position = new InvoicePosition
+const decimal priceNet = 12500.00m;
+const int quantity = 3;
+const decimal discountPercent = 5m;
+// Helper to get decimal rate (e.g., 0.23) from string constant
+var taxRate = VatRates.ToRate(VatRates.Vat23) ?? 0;
+
+// 1. Calculate unit price after discount
+var priceAfterDiscount = Math.Round(priceNet * (1 - (discountPercent / 100)), 2);
+// 2. Calculate total net for all items
+var totalNet = Math.Round(priceAfterDiscount * quantity, 2);
+// 3. Calculate final gross amount
+var totalGross = Math.Round(totalNet * (1 + taxRate), 2);
+
+var request = new InvoiceRequest
 {
-    Name = "Laptop Dell XPS 15",
-    Tax = "23",
-    PriceNet = 5200m,
-    Quantity = 2,
-    GtuCode = "GTU_01",
-    DiscountPercent = 5m
+    BuyerName = "Global Client Sp. z o.o.",
+    BuyerTaxNo = "PL5250001090",
+    Currency = Currencies.EUR,
+    Lang = Languages.EN,
+    ShowDiscount = LogicalStatus.Yes,
+    DiscountKind = DiscountKinds.PercentUnit,
+    SellDate = DateTime.Today.ToString("yyyy-MM-dd"),
+    IssueDate = DateTime.Today.ToString("yyyy-MM-dd"),
+    Positions = [
+        new InvoicePosition
+        {
+            Name = "Dell XPS 15 Laptop",
+            Tax = VatRates.Vat23,
+            PriceNet = priceNet,         // Unit price BEFORE discount
+            Quantity = quantity,
+            GtuCode = GtuCodes.Gtu06,    // Required for some electronics in Poland
+            DiscountPercent = discountPercent,
+            TotalPriceGross = totalGross // Manually calculated to avoid rounding issues
+        }
+    ]
 };
+
+var response = await client.CreateInvoiceAsync(request);
 ```
 
 ### Currency Exchange
@@ -135,7 +166,7 @@ catch (FakturowniaException ex)
 
 ## Logging & Debugging
 
-The SDK integrates with `Microsoft.Extensions.Logging.Abstractions` and is optional but very useful.
+The SDK integrates with `Microsoft.Extensions.Logging` and is optional but very useful.
 
 Just enable console (or any other) logging in your app:
 
@@ -145,6 +176,11 @@ builder.Logging.SetMinimumLevel(LogLevel.Debug);
 ```
 
 The `api_token` is automatically masked in logs for security.
+
+## Documentation
+
+- [Advanced Examples & Rounding Guide](README.md#advanced-examples)
+- [Full Constants & Enums Reference](CONSTANTS.md)
 
 ## Contributing
 

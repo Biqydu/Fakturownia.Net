@@ -1,4 +1,6 @@
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Biqydu.Fakturownia.Net.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -14,21 +16,31 @@ public static class FakturowniaServiceExtensions
         Action<FakturowniaOptions> configure)
     {
         services.Configure(configure);
-        
+
         services.AddHttpClient<IFakturowniaClient, FakturowniaClient>((sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<FakturowniaOptions>>().Value;
-        
+
                 if (string.IsNullOrWhiteSpace(options.Subdomain))
                     throw new ArgumentException("Fakturownia Subdomain must be provided.");
-            
+                
                 if (string.IsNullOrWhiteSpace(options.ApiToken))
-                    throw new ArgumentException("Fakturownia API Token must be provided.");
-            
+                    throw new ArgumentException("Fakturownia API Token must be provided.");               
+
                 client.BaseAddress = new Uri($"https://{options.Subdomain}.fakturownia.pl/");
+
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             })
-            .AddPolicyHandler(GetRetryPolicy()); 
+            .AddPolicyHandler(GetRetryPolicy());
+
+
+        services.AddKeyedSingleton("FakturowniaJsonOptions", new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = false,
+        });
 
         return services;
     }
@@ -36,9 +48,9 @@ public static class FakturowniaServiceExtensions
     private static AsyncRetryPolicy<HttpResponseMessage> GetRetryPolicy()
     {
         return HttpPolicyExtensions
-            .HandleTransientHttpError() 
+            .HandleTransientHttpError()
             .OrResult(msg => msg.StatusCode == HttpStatusCode.TooManyRequests)
-            .WaitAndRetryAsync(3, retryAttempt => 
-                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))); 
+            .WaitAndRetryAsync(3, retryAttempt =>
+                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
 }

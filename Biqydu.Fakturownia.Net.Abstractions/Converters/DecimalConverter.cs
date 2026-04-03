@@ -17,10 +17,10 @@ public class DecimalConverter : JsonConverter<decimal>
             case JsonTokenType.Number:
                 return reader.GetDecimal();
             case JsonTokenType.String:
-            {
-                var str = reader.GetString();
-                return string.IsNullOrWhiteSpace(str) ? 0 : decimal.Parse(str.Replace(',', '.'), CultureInfo.InvariantCulture);
-            }
+                {
+                    var str = reader.GetString();
+                    return string.IsNullOrWhiteSpace(str) ? 0 : decimal.Parse(str.Replace(',', '.'), CultureInfo.InvariantCulture);
+                }
             default:
                 throw new JsonException($"Unexpected token type {reader.TokenType} for decimal.");
         }
@@ -44,12 +44,12 @@ public class NullableDecimalConverter : JsonConverter<decimal?>
             case JsonTokenType.Number:
                 return reader.GetDecimal();
             case JsonTokenType.String:
-            {
-                var str = reader.GetString();
-                if (string.IsNullOrWhiteSpace(str)) return null;
+                {
+                    var str = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(str)) return null;
 
-                return decimal.Parse(str.Replace(',', '.'), CultureInfo.InvariantCulture);
-            }
+                    return decimal.Parse(str.Replace(',', '.'), CultureInfo.InvariantCulture);
+                }
             default:
                 throw new JsonException($"Unexpected token type {reader.TokenType} for decimal?.");
         }

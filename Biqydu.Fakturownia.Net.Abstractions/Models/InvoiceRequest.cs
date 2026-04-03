@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
+using Biqydu.Fakturownia.Net.Abstractions.Constants;
 using Biqydu.Fakturownia.Net.Abstractions.Converters;
-using Biqydu.Fakturownia.Net.Abstractions.Models.Constants;
-using Biqydu.Fakturownia.Net.Abstractions.Models.Enums;
+using Biqydu.Fakturownia.Net.Abstractions.Enums;
 
 namespace Biqydu.Fakturownia.Net.Abstractions.Models;
 
@@ -10,8 +10,19 @@ public record InvoiceRequest
     [JsonPropertyName("number")]
     public string? Number { get; init; }
 
+    /// <summary>
+    /// Type of the document. 
+    /// You can use constants from <see cref="InvoiceKinds"/> or provide a custom string.
+    /// </summary>
     [JsonPropertyName("kind")]
     public string Kind { get; init; } = InvoiceKinds.Vat;
+
+    /// <summary>
+    /// Invoice status (e.g., issued, paid). 
+    /// You can use constants from <see cref="InvoiceStatuses"/> or provide a custom string.
+    /// </summary>
+    [JsonPropertyName("status")]
+    public string Status { get; init; } = InvoiceStatuses.Issued;
 
     [JsonPropertyName("sell_date")]
     public required string SellDate { get; init; }
@@ -28,12 +39,23 @@ public record InvoiceRequest
     [JsonPropertyName("payment_to_kind")]
     public string? PaymentToKind { get; init; }
 
+    /// <summary>
+    /// Payment method. Use constants from <see cref="PaymentMethods"/>.
+    /// </summary>
     [JsonPropertyName("payment_type")]
-    public string PaymentType { get; init; } = PaymentMethod.Transfer;
+    public string PaymentType { get; init; } = PaymentMethods.Transfer;
 
+    /// <summary>
+    /// Currency code (e.g., PLN, EUR, USD). 
+    /// You can use constants from <see cref="Currencies"/> or provide any valid ISO currency code as a string.
+    /// </summary>
     [JsonPropertyName("currency")]
     public string Currency { get; init; } = Currencies.PLN;
 
+    /// <summary>
+    /// Document language (e.g., "pl", "en", "de").
+    /// You can use constants from <see cref="Languages"/>.
+    /// </summary>
     [JsonPropertyName("lang")]
     public string Lang { get; init; } = Languages.PL;
 
@@ -58,7 +80,8 @@ public record InvoiceRequest
     public string? SellerTaxNo { get; init; }
 
     /// <summary>
-    /// Type of seller's tax number. Empty = NIP. Other values: "nip_ue", "other", "empty".
+    /// Type of seller's tax number. 
+    /// You can use constants from <see cref="TaxNoKinds"/>.
     /// </summary>
     [JsonPropertyName("seller_tax_no_kind")]
     public string? SellerTaxNoKind { get; init; }
@@ -110,7 +133,8 @@ public record InvoiceRequest
     public string? BuyerTaxNo { get; init; }
 
     /// <summary>
-    /// Type of buyer's tax number. Empty = NIP. Other values: "nip_ue", "other", "empty".
+    /// Type of buyer's tax number. 
+    /// You can use constants from <see cref="TaxNoKinds"/>.
     /// </summary>
     [JsonPropertyName("buyer_tax_no_kind")]
     public string? BuyerTaxNoKind { get; init; }
@@ -132,7 +156,7 @@ public record InvoiceRequest
 
     [JsonPropertyName("buyer_note")]
     public string? BuyerNote { get; init; }
-    
+
     [JsonPropertyName("buyer_company")]
     public bool? BuyerCompany { get; init; }
 
@@ -202,16 +226,53 @@ public record InvoiceRequest
     [JsonPropertyName("from_invoice_id")]
     public string? FromInvoiceId { get; init; }
 
+    [JsonPropertyName("use_oss")]
+    [JsonConverter(typeof(LogicalStatusConverter))]
+    public LogicalStatus? UseOss { get; init; }
+
+    [JsonPropertyName("fill_default_descriptions")]
+    public bool? FillDefaultDescriptions { get; init; }
+
+    [JsonPropertyName("use_prices_from_price_lists")]
+    public bool? UsePricesFromPriceLists { get; init; }
+
+    [JsonPropertyName("price_list_id")]
+    public string? PriceListId { get; init; }
+
+    [JsonPropertyName("buyer_override")]
+    public bool? BuyerOverride { get; init; }
+
+    [JsonPropertyName("correction_reason")]
+    public string? CorrectionReason { get; init; }
+
+    /// <summary>
+    /// Advance invoice creation mode.
+    /// You can use constants from <see cref="AdvanceCreationModes"/>.
+    /// Only works when Kind = "advance" and copy_invoice_from (order ID) is provided.
+    /// </summary>
+    [JsonPropertyName("advance_creation_mode")]
+    public string? AdvanceCreationMode { get; init; }
+
+    [JsonPropertyName("advance_value")]
+    public string? AdvanceValue { get; init; }
+
+    [JsonPropertyName("position_name")]
+    public string? PositionName { get; init; }
+
     // -------------------------
     // Discounts
     // -------------------------
 
+    /// <summary>
+    /// Whether to show the discount column on the invoice.
+    /// </summary>
     [JsonPropertyName("show_discount")]
-    public string ShowDiscount { get; init; } = "0";
+    [JsonConverter(typeof(LogicalStatusConverter))]
+    public LogicalStatus ShowDiscount { get; init; } = LogicalStatus.No;
 
     /// <summary>
-    /// Discount type: "percent_unit" (percentage of unit net price) or "amount" (fixed amount).
-    /// Required when show_discount = "1".
+    /// Discount type. Required when show_discount = LogicalStatus.Yes.
+    /// You can use constants from <see cref="DiscountKinds"/>.
     /// </summary>
     [JsonPropertyName("discount_kind")]
     public string? DiscountKind { get; init; }
@@ -221,7 +282,8 @@ public record InvoiceRequest
     // -------------------------
 
     [JsonPropertyName("split_payment")]
-    public string SplitPayment { get; init; } = "0";
+    [JsonConverter(typeof(LogicalStatusConverter))]
+    public LogicalStatus SplitPayment { get; init; } = LogicalStatus.No;
 
     // -------------------------
     // Other
@@ -233,15 +295,19 @@ public record InvoiceRequest
     [JsonPropertyName("warehouse_id")]
     public string? WarehouseId { get; init; }
 
+    /// <summary>
+    /// Whether to show the additional info column (e.g., PKWiU).
+    /// </summary>
     [JsonPropertyName("additional_info")]
-    public string AdditionalInfo { get; init; } = "0";
+    [JsonConverter(typeof(LogicalStatusConverter))]
+    public LogicalStatus AdditionalInfo { get; init; } = LogicalStatus.No;
 
     /// <summary>
     /// Name of the additional column on invoice positions (e.g. "PKWiU").
     /// </summary>
     [JsonPropertyName("additional_info_desc")]
     public string? AdditionalInfoDesc { get; init; }
-    
+
     [JsonPropertyName("gov_save_and_send")]
     public bool? GovSaveAndSend { get; init; }
 
@@ -264,10 +330,10 @@ public record InvoiceRequest
     [JsonPropertyName("exchange_currency_rate")]
     public string? ExchangeCurrencyRate { get; init; }
 
-    // -------------------------
-    // Positions
-    // -------------------------
 
     [JsonPropertyName("positions")]
     public required List<InvoicePosition> Positions { get; init; } = [];
+
+    [JsonPropertyName("procedure_designations")]
+    public List<string>? ProcedureDesignations { get; init; }
 }

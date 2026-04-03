@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Biqydu.Fakturownia.Net.Abstractions.Constants;
 using Biqydu.Fakturownia.Net.Abstractions.Converters;
 
 namespace Biqydu.Fakturownia.Net.Abstractions.Models;
@@ -44,7 +45,7 @@ public record InvoicePosition
     // -------------------------
 
     /// <summary>
-    /// Percentage discount. Requires show_discount="1" on the invoice
+    /// Percentage discount. Requires show_discount = LogicalStatus.Yes on the invoice
     /// and the setting "How to calculate discount" = "percentage" in Account Settings.
     /// </summary>
     [JsonPropertyName("discount_percent")]
@@ -75,7 +76,8 @@ public record InvoicePosition
 
     /// <summary>
     /// GTU Code (Goods and Services Groups) — required for JPK_V7.
-    /// E.g. "GTU_01", "GTU_12".
+    /// You can use constants from <see cref="GtuCodes"/> (e.g., "GTU_01", "GTU_12") 
+    /// or provide a custom string if needed.
     /// </summary>
     [JsonPropertyName("gtu_code")]
     public string? GtuCode { get; init; }

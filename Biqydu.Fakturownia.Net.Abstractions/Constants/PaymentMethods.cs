@@ -1,10 +1,13 @@
-namespace Biqydu.Fakturownia.Net.Abstractions.Models.Constants;
+using Biqydu.Fakturownia.Net.Abstractions.Models;
+
+namespace Biqydu.Fakturownia.Net.Abstractions.Constants;
 
 /// <summary>
 /// Predefined payment methods supported by Fakturownia.pl.
-/// You can use these constants or provide your own text string.
+/// Use these constants when setting the <see cref="InvoiceRequest.PaymentType"/> property.
+/// You can also provide your own custom text string if needed.
 /// </summary>
-public static class PaymentMethod
+public static class PaymentMethods
 {
     public const string Transfer = "transfer";
     public const string Card = "card";

@@ -1,7 +1,10 @@
-namespace Biqydu.Fakturownia.Net.Abstractions.Models.Constants;
+using Biqydu.Fakturownia.Net.Abstractions.Models;
+
+namespace Biqydu.Fakturownia.Net.Abstractions.Constants;
 
 /// <summary>
 /// Languages supported by Fakturownia.pl.
+/// Used in <see cref="InvoiceRequest.Lang"/>.
 /// </summary>
 public static class Languages
 {
