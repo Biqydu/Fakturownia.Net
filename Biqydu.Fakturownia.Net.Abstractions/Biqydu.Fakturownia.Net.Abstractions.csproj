@@ -15,6 +15,13 @@
         <PackageIcon>logo.png</PackageIcon>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
+        <PackageReleaseNotes>
+            v2.0.0: MAJOR BREAKING CHANGE.
+            - Relocated all Constants and Enums to root namespaces for better DX.
+            - Added full JPK_V7 support (GtuCodes, VatRates).
+            - Added LogicalStatus, DiscountKinds, and KSeF roles.
+            - Added VatRates.ToRate() helper.
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

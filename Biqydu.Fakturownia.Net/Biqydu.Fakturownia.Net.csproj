@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <Version>2.0.0</Version>
         <Authors>Biqydu</Authors>
-        <Description>Lightweight and modern .NET 8 SDK for Fakturownia.pl (Invoicing API).</Description>
+        <Description>"Professional, type-safe .NET 8+ SDK for Fakturownia.pl. Built for financial precision and high-performance invoicing..</Description>
         <PackageTags>fakturownia;invoice;sdk;api;billing;dotnet8</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -14,6 +14,12 @@
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageIcon>logo.png</PackageIcon>
+        <PackageReleaseNotes>
+            v2.0.0:
+            - Migrated to Keyed Services for internal JsonSerializerOptions.
+            - Added support for new Abstractions v2.0.0.
+            - Improved logging: better masking of api_token in URLs.
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
