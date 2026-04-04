@@ -3,9 +3,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>2.0.0</Version>
+        <Version>2.0.1</Version>
         <Authors>Biqydu</Authors>
-        <Description>"Professional, type-safe .NET 8+ SDK for Fakturownia.pl. Built for financial precision and high-performance invoicing..</Description>
+        <Description>Professional, type-safe .NET 8+ SDK for Fakturownia.pl. Built for financial precision, high-performance invoicing, and seamless JPK_V7 compliance.</Description>
         <PackageTags>fakturownia;invoice;sdk;api;billing;dotnet8</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
